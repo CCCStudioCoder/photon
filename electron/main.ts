@@ -29,26 +29,26 @@ let currentLayout: unknown = null
 
 function readLayoutFile() {
   if (!fs.existsSync(LAYOUT_PATH)) {
-    return null
+    return null;
   }
 
   try {
-    return JSON.parse(fs.readFileSync(LAYOUT_PATH, 'utf8'))
+    return JSON.parse(fs.readFileSync(LAYOUT_PATH, 'utf8'));
   } catch (error) {
-    console.error(`Failed to read layout from ${LAYOUT_PATH}`, error)
-    return null
+    console.error(`Failed to read layout from ${LAYOUT_PATH}`, error);
+    return null;
   }
 }
 
 function writeLayoutFile() {
   if (currentLayout == null) {
-    return
+    return;
   }
 
   try {
-    fs.writeFileSync(LAYOUT_PATH, JSON.stringify(currentLayout, null, 2), 'utf8')
+    fs.writeFileSync(LAYOUT_PATH, JSON.stringify(currentLayout, null, 2), 'utf8');
   } catch (error) {
-    console.error(`Failed to write layout to ${LAYOUT_PATH}`, error)
+    console.error(`Failed to write layout to ${LAYOUT_PATH}`, error);
   }
 }
 
@@ -58,29 +58,48 @@ function createWindow() {
     webPreferences: {
       preload: path.join(__dirname, 'preload.mjs'),
     },
-  })
+  });
 
   // Test active push message to Renderer-process.
   win.webContents.on('did-finish-load', () => {
-    win?.webContents.send('main-process-message', (new Date).toLocaleString())
-  })
+    win?.webContents.send('main-process-message', (new Date).toLocaleString());
+  });
 
   if (VITE_DEV_SERVER_URL) {
-    win.loadURL(VITE_DEV_SERVER_URL)
+    win.loadURL(VITE_DEV_SERVER_URL);
   } else {
     // win.loadFile('dist/index.html')
-    win.loadFile(path.join(RENDERER_DIST, 'index.html'))
+    win.loadFile(path.join(RENDERER_DIST, 'index.html'));
   }
 }
 
 ipcMain.handle('layout:load', () => {
   currentLayout = readLayoutFile()
   return currentLayout
-})
+});
 
 ipcMain.on('layout:update', (_event, layout) => {
   currentLayout = layout
-})
+});
+
+ipcMain.handle('project:open', (_event, pathArg) => {
+  const PATH = path.join(process.env.APP_ROOT, ...pathArg);
+  const handleError = (e: any) => {
+    console.error(e);
+    return -1;
+  };
+  if(typeof PATH != "string") {
+    handleError(PATH + " is not a string");
+  }
+  if(!fs.existsSync(PATH)) {
+    return handleError("No file exist at " + PATH);
+  }
+  try {
+    return JSON.parse(fs.readFileSync(PATH, "utf8"));
+  } catch(error) {
+    return handleError(error);
+  }
+});
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits

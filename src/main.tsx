@@ -1,12 +1,11 @@
 import './style.css'
 import { render } from 'preact'
-import { Dispatch, StateUpdater, useEffect, useRef, useState } from 'preact/hooks';
+import { Dispatch, StateUpdater, useEffect, useState } from 'preact/hooks';
 import { DEFAULT_LAYOUT, deserializeLayout, LayoutUpdater, serializeLayout, type Layout, type SerializedLayout } from './renderer/display';
 import { AppRenderer, FullscreenRenderer } from './renderer/core';
 import { Project } from './core/project';
-import { signal } from '@preact/signals';
 
-export type Localization = {
+export type Location = {
     objType: string;
     directories: string[];
     file: string;
@@ -14,14 +13,14 @@ export type Localization = {
 }
 
 export type IDEContextManager = {
-    getLoc: () => Localization;
-    setLoc: Dispatch<StateUpdater<Localization>>;
+    getLoc: () => Location;
+    setLoc: Dispatch<StateUpdater<Location>>;
     project: Project;
 }
 
 function App() {
     const [layout, setLayout] = useState<Layout>(DEFAULT_LAYOUT);
-    const [loc, setLoc] = useState<Localization>({
+    const [loc, setLoc] = useState<Location>({
         objType: "page",
         directories: [],
         file: "home",

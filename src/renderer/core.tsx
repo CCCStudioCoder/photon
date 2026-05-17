@@ -62,7 +62,7 @@ export function WindowRenderer({layout, win, updateHook, ideManager}: {layout: L
                     {button && button[0]((() => ctx), setCtx)}
                 </div>
             </div>
-            <div className="content">{CURRENT.render(ctx)}</div>
+            <div className="content">{CURRENT.render(ideManager, ctx)}</div>
         </div>
     );
 }
@@ -85,7 +85,7 @@ export function FullscreenRenderer<T>({win, updateHook, ideManager}: {win: Inner
                 </button>
                 {win.button && win.button[0](() => buttonCtx!, setCtx)}
             </div>
-            <div className="render">{win.render(buttonCtx)}</div>
+            <div className="render">{win.render(ideManager, buttonCtx)}</div>
         </div>
     );
 }
