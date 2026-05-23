@@ -44,7 +44,7 @@ function Wrapper({children, title}: {children: ComponentChildren, title: string}
 
 function wrapDir<T extends LabObject<any>>(dir: StructuredDirectory<T>, action: (name: string) => void) {
     return (
-        <Wrapper title={dir.nameT}>
+        <Wrapper title={dir.name}>
             {dir.content.map((e, i) => "nameT" in e ? wrapDir(e, name => action(name + "/" + e.nameT)) : <div key={i} className="file-block" onClick={() => action(e.name)}>{e.name}</div>)}
         </Wrapper>
     );
@@ -66,7 +66,7 @@ function renderNav(ideManager: IDEContextManager) {
             <div className="nav-wrapper">
                 <Wrapper title={name}>
                     {listToDir(objType(ideManager.project)).content
-                        .map((e, i) => "nameT" in e ? wrapDir(e, name => setLoc(name)) : <div key={i} className="file-block">{e.name}</div>)}
+                        .map((e, i) => "name" in e ? wrapDir(e, name => setLoc(name)) : <div key={i} className="file-block">{e.name}</div>)}
                 </Wrapper>
             </div>
         );

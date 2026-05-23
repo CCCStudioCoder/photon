@@ -11,5 +11,7 @@ export function CodeZone({declaration}: {declaration: TSDeclaration<unknown>}) {
 }
 
 export function CodeNode({instruction}: {instruction: CodeInstruction}) {
-
+    return (
+        <div style={styles.codeNode}></div>
+    )
 }
